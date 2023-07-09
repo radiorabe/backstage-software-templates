@@ -1,0 +1,63 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: semrel
+  title: Semantic Release
+  description: Enable Semantic Release on an existing project.
+  tags:
+    - recommended
+spec:
+  owner: it-reaktion
+  type: ci
+  parameters:
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+            allowedOwners:
+              - radiorabe
+            requestUserCredentials:
+              secretsKey: USER_GITHUB_OAUTH_TOKEN
+              additionalScopes:
+                github:
+                  - workflow
+  steps:
+    - id: getversion
+      name: get actions version
+      action: http:backstage:request
+      input:
+        method: 'GET'
+        path: /proxy/api.github.com/repos/radiorabe/actions/releases/latest
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ../skaffolder-skeletons/semrel/
+        values:
+          actions_version: ${{ steps.getversion.output.body.tag_name }}
+    - id: publish
+      name: Publish
+      action: publish:github:pull-request
+      input:
+        title: "chore(ci): configure semantic releasing"
+        token: ${{ secrets.USER_GITHUB_OAUTH_TOKEN }}
+        repoUrl: ${{ parameters.repoUrl }}
+        branchName: chore/ci/init-semrel
+        description: |
+          # Initialize [go-semantic-release](https://go-semantic-release.xyz/).
+
+          Based on [radiorabe/actions: Semantic Release](https://github.com/radiorabe/actions#semantic-release).
+
+          Semantic Releases are done by [@it-reaktion](https://github.com/it-reaktion). Ensure that this repo
+          hass access to the org-level  `RABE_ITREAKTION_GITHUB_TOKEN` secret before merging this.
+  output:
+    links:
+      - url: ${{steps.publish.output.remoteUrl}}
+        title: "Go to PR"

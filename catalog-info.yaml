@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: software-templates
+  description: RaBe Backstage template collection
+spec:
+  type: url
+  targets:
+    - https://github.com/radiorabe/backstage-software-templates/blob/main/scaffolder-templates/semrel/template.yaml
