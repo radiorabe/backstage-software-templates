@@ -39,7 +39,7 @@ spec:
       name: Fetch Base
       action: fetch:template
       input:
-        url: ../../skaffolder-skeletons/semrel/
+        url: ../../scaffolder-skeletons/semrel/
         replace: true
         values:
           actions_version: ${{ steps.getversion.output.body.tag_name }}
