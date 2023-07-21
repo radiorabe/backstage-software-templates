@@ -33,7 +33,7 @@ spec:
           title: Select ecosystems
           type: array
           items:
-            type: boolean
+            type: string
             enum:
               - 'Enable Docker'
               - 'Enable Python'
