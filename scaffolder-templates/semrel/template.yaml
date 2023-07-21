@@ -30,7 +30,7 @@ spec:
                   - workflow
   steps:
     - id: getversion
-      name: get actions version
+      name: Get radiorabe/actions version
       action: http:backstage:request
       input:
         method: 'GET'
@@ -56,8 +56,7 @@ spec:
 
           Based on [radiorabe/actions: Semantic Release](https://github.com/radiorabe/actions#semantic-release).
 
-          Semantic Releases are done by [@it-reaktion](https://github.com/it-reaktion). Ensure that this repo
-          hass access to the org-level  `RABE_ITREAKTION_GITHUB_TOKEN` secret before merging this.
+          Semantic Releases are done by [@it-reaktion](https://github.com/it-reaktion). Ensure that this repo has access to the org-level `RABE_ITREAKTION_GITHUB_TOKEN` secret before merging this.
   output:
     links:
       - url: ${{steps.publish.output.remoteUrl}}
