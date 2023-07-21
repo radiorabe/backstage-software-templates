@@ -1,0 +1,20 @@
+version: 2
+updates:
+{% if values.is_docker %}
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+{% endif %}
+{% if values.is_python %}
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: "daily"
+{% endif %}
+{% if values.is_github_actions %}
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+{% endif %}
