@@ -1,0 +1,136 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: semrel
+  title: Semantic Release
+  description: Enable Semantic Release on an existing project.
+  tags:
+    - recommended
+spec:
+  owner: it-reaktion
+  type: ci
+  parameters:
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+            allowedOwners:
+              - radiorabe
+            requestUserCredentials:
+              secretsKey: USER_GITHUB_OAUTH_TOKEN
+              additionalScopes:
+                github:
+                  - workflow
+    - title: Configure CI Schedule
+      required:
+        - schedule
+        - trivy
+        - trivy_image_ref
+      properties:
+        schedule:
+          title: Schedule in crontab syntax
+          type: string
+          default: "13 12 * * *"
+        trivy:
+          title: Enable Trivy
+          type: boolean
+          default: true
+          readOnly: true
+        trivy_image_ref:
+          title: Image Ref
+          type: string
+          default: ghcr.io/radiorabe/<changeme>:latest
+    - title: Enable Dependabot Ecosystems
+      required:
+        - ecosystems
+      properties:
+        ecosystems:
+          title: Select ecosystems
+          type: array
+          items:
+            type: string
+            enum:
+              - 'Enable Docker'
+              - 'Enable Python'
+              - 'Enable GitHub Actions'
+          uniqueItems: true
+          ui:widget: checkboxes
+  steps:
+    - id: getversion
+      name: Get radiorabe/actions version
+      action: http:backstage:request
+      input:
+        method: 'GET'
+        path: /proxy/api.github.com/repos/radiorabe/actions/releases/latest
+    - id: fetch-base-semrel
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ../../scaffolder-skeletons/semrel/
+        replace: true
+        values:
+          actions_version: ${{ steps.getversion.output.body.tag_name }}
+    - id: fetch-base-ci-schedule
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ../../scaffolder-skeletons/ci_schedule/
+        replace: true
+        values:
+          actions_version: ${{ steps.getversion.output.body.tag_name }}
+          schedule: ${{ parameters.schedule }}
+          trivy: ${{ parameters.trivy }}
+          trivy_image_ref: ${{ parameters.trivy_image_ref }}
+    - id: fetch-base-dependabot
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ../../scaffolder-skeletons/dependabot/
+        replace: true
+        values:
+          is_docker: ${{ parameters.ecosystems.includes('Enable Docker') }}
+          is_python: ${{ parameters.ecosystems.includes('Enable Python') }}
+          is_github_actions: ${{ parameters.ecosystems.includes('Enable GitHub Actions') }}
+    - id: publish
+      name: Publish
+      action: publish:github:pull-request
+      input:
+        title: "chore: update ci/cd configuration"
+        token: ${{ secrets.USER_GITHUB_OAUTH_TOKEN }}
+        repoUrl: ${{ parameters.repoUrl }}
+        branchName: chore/ci/all-in-one
+        description: |
+          # Initialize or Update CI/CD Pipelines
+
+          ## Initialize [go-semantic-release](https://go-semantic-release.xyz/).
+
+          Based on [radiorabe/actions: Semantic Release](https://github.com/radiorabe/actions#semantic-release).
+
+          Semantic Releases are done by [@it-reaktion](https://github.com/it-reaktion). Ensure that this repo has access to the org-level `RABE_ITREAKTION_GITHUB_TOKEN` secret before merging this.
+
+          ## Initialize Scheduled GitHub Actions
+
+          Configure scheduled CI runs.
+
+          ### Schedule
+
+          ```
+          ${{ parameters.schedule }}
+          ```
+
+          ### Jobs
+
+          {%- if parameters.trivy %}
+          * [Trivy](https://trivy.dev) (via [radiorabe/actions](https://radiorabe.github.io/actions/#container-schedule))
+          {%- endif %}
+
+          ## Initialize [GitHub Dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-security-updates/about-dependabot-security-updates).
+
+          Configures Dependabot to create regular update PRs.
