@@ -76,6 +76,7 @@ spec:
         token: ${{ secrets.USER_GITHUB_OAUTH_TOKEN }}
         repoUrl: ${{ parameters.repoUrl }}
         branchName: chore/ci/schedule
+        update: true
         description: |
           # Scheduled GitHub Actions
 

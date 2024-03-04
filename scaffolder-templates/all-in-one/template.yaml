@@ -106,6 +106,7 @@ spec:
         token: ${{ secrets.USER_GITHUB_OAUTH_TOKEN }}
         repoUrl: ${{ parameters.repoUrl }}
         branchName: chore/ci/all-in-one
+        update: true
         description: |
           # Initialize or Update CI/CD Pipelines
 
