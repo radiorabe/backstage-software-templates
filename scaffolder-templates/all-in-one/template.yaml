@@ -1,9 +1,9 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: semrel
-  title: Semantic Release
-  description: Enable Semantic Release on an existing project.
+  name: all-in-one
+  title: All-in-One
+  description: All-in-one CI/CD configuration.
   tags:
     - recommended
 spec:
