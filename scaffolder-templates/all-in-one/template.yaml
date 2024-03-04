@@ -134,3 +134,7 @@ spec:
           ## Initialize [GitHub Dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-security-updates/about-dependabot-security-updates).
 
           Configures Dependabot to create regular update PRs.
+  output:
+    links:
+      - url: ${{steps.publish.output.remoteUrl}}
+        title: "Go to PR"
