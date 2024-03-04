@@ -1,0 +1,98 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: ci_schedule
+  title: CI Schedule
+  description: Enable scheduled CI runs on an existing project.
+  tags:
+    - security
+spec:
+  owner: it-reaktion
+  type: ci
+  parameters:
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+            allowedOwners:
+              - radiorabe
+            requestUserCredentials:
+              secretsKey: USER_GITHUB_OAUTH_TOKEN
+    - title: Configure Schedule
+      required:
+        - schedule
+      properties:
+        schedule:
+          title: Schedule in crontab syntax
+          type: string
+          default: "13 12 * * *"
+    - title: Enable Features
+      required:
+        - trivy
+      properties:
+        trivy:
+          title: Enable Trivy
+          type: boolean
+          default: true
+          readOnly: true
+    - title: Configure Trivy
+      required:
+        - trivy_image_ref
+      properties:
+        trivy_image_ref:
+          title: Image Ref
+          type: string
+          default: ghcr.io/radiorabe/<changeme>:latest
+  steps:
+    - id: getversion
+      name: Get radiorabe/actions version
+      action: http:backstage:request
+      input:
+        method: 'GET'
+        path: /proxy/api.github.com/repos/radiorabe/actions/releases/latest
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ../../scaffolder-skeletons/ci_schedule/
+        replace: true
+        values:
+          actions_version: ${{ steps.getversion.output.body.tag_name }}
+          schedule: ${{ parameters.schedule }}
+          trivy: ${{ parameters.trivy }}
+          trivy_image_ref: ${{ parameters.trivy_image_ref }}
+    - id: publish
+      name: Publish
+      action: publish:github:pull-request
+      input:
+        title: "chore(ci): configure scheduled CI runs"
+        token: ${{ secrets.USER_GITHUB_OAUTH_TOKEN }}
+        repoUrl: ${{ parameters.repoUrl }}
+        branchName: chore/ci/schedule
+        description: |
+          # Scheduled GitHub Actions
+
+          Configure scheduled CI runs.
+
+          ## Schedule
+
+          ```
+          ${{ parameters.schedule }}
+          ```
+
+          ## Jobs
+
+          {%- if parameters.trivy %}
+          * [Trivy](https://trivy.dev) (via [radiorabe/actions](https://radiorabe.github.io/actions/#container-schedule))
+          {%- endif %}
+  output:
+    links:
+      - url: ${{steps.publish.output.remoteUrl}}
+        title: "Go to PR"

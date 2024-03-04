@@ -1,20 +1,28 @@
 version: 2
 updates:
 {%- if values.is_docker %}
-  - package-ecosystem: "docker"
-    directory: "/"
+  - package-ecosystem: docker
+    directory: /
     schedule:
-      interval: "daily"
+      interval: daily
+    commit-message:
+      prefix: "chore: "
+    groups:
+      baseimages:
+        patterns:
+          - "*"
+{%- endif %}
+{%- if values.is_github_actions %}
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: "chore(ci): "
 {%- endif %}
 {%- if values.is_python %}
   - package-ecosystem: pip
-    directory: "/"
+    directory: /
     schedule:
-      interval: "daily"
-{%- endif %}
-{%- if values.is_github_actions %}
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
+      interval: daily
 {%- endif %}
