@@ -59,6 +59,7 @@ spec:
         token: ${{ secrets.USER_GITHUB_OAUTH_TOKEN }}
         repoUrl: ${{ parameters.repoUrl }}
         branchName: chore/ci/dependabot
+        update: true
         description: |
           # Initialize [GitHub Dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-security-updates/about-dependabot-security-updates).
 
