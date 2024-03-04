@@ -1,0 +1,14 @@
+name: Scheduled tasks
+
+on:
+  schedule:
+    - cron:  '${{ values.schedule }}'
+  workflow_dispatch:
+
+jobs:
+{%- if values.trivy %}
+  schedule-trivy:
+    uses: radiorabe/actions/.github/workflows/schedule-trivy.yaml@${{ values.actions_version }}
+    with:
+      image-ref: ${{ values.trivy_image_ref }}
+{%- endif %}

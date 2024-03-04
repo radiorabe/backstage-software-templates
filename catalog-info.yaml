@@ -6,5 +6,6 @@ metadata:
 spec:
   type: url
   targets:
+    - https://github.com/radiorabe/backstage-software-templates/blob/main/scaffolder-templates/ci_schedule/template.yaml
     - https://github.com/radiorabe/backstage-software-templates/blob/main/scaffolder-templates/dependabot/template.yaml
     - https://github.com/radiorabe/backstage-software-templates/blob/main/scaffolder-templates/semrel/template.yaml
