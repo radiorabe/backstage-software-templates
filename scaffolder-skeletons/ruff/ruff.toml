@@ -62,7 +62,7 @@ ignore = [
 	"D",       # pydocstyle is optional for tests
 	"ANN",     # flake8-annotations are optional for tests
 	"S101",    # assert is allow in tests
-	"S108"     # /tmp is allowed in tests since it's expected to be mocked
+	"S108",    # /tmp is allowed in tests since it's expected to be mocked
 	"DTZ001",  # tests often run in UTC
 	"INP001",  # tests do not need a dunder init
 ]
