@@ -55,6 +55,7 @@ spec:
 
           * [ ] pytest-ruff is installed and the `--ruff` arg is passed in `pyproject.toml`
           * [ ] `pyproject.toml` does not contain any further ruff configuration
+          * [ ] all pytest files are in the `tests/` subdir
   output:
     links:
       - url: ${{steps.publish.output.remoteUrl}}
