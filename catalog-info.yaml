@@ -9,4 +9,5 @@ spec:
     - https://github.com/radiorabe/backstage-software-templates/blob/main/scaffolder-templates/all-in-one/template.yaml
     - https://github.com/radiorabe/backstage-software-templates/blob/main/scaffolder-templates/ci_schedule/template.yaml
     - https://github.com/radiorabe/backstage-software-templates/blob/main/scaffolder-templates/dependabot/template.yaml
+    - https://github.com/radiorabe/backstage-software-templates/blob/main/scaffolder-templates/ruff/template.yaml
     - https://github.com/radiorabe/backstage-software-templates/blob/main/scaffolder-templates/semrel/template.yaml
